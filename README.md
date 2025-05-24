@@ -30,3 +30,16 @@ A dynamic, interactive debate system where multiple AI agents—each with distin
 - OpenAI (`gpt-3.5-turbo`)
 - Custom memory manager (`MemorySaver`)
 - SSE endpoint for streaming responses
+
+---
+
+## UI
+
+- Selecting Agents
+  ![Chat selection](public/screenshots/agent-selection.png)
+
+- Creating Room
+  ![Chat selection](public/screenshots/creating-room.png)
+
+- Debate Section
+  ![Chat selection](public/screenshots/debate-section.png)
