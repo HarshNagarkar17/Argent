@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { Agent, agents } from "../data/agents";
+import { AgentType } from "../data/agents";
 
 export interface Message {
   id: string;
@@ -9,8 +9,8 @@ export interface Message {
 }
 
 interface DebateContextType {
-  selectedAgents: Agent[];
-  toggleAgentSelection: (agent: Agent) => void;
+  selectedAgents: AgentType[];
+  toggleAgentSelection: (agent: AgentType) => void;
   topic: string;
   setTopic: (topic: string) => void;
   userOpinion: string;
@@ -23,12 +23,13 @@ interface DebateContextType {
   nextSelectedAgent: string;
   setNextSelectedAgent: (agentId: string) => void;
   updateMessageContent: (id: string, content: string) => void;
+  clearSelectedAgents: () => void;
 }
 
 const DebateContext = createContext<DebateContextType | undefined>(undefined);
 
 export const DebateProvider = ({ children }: { children: ReactNode }) => {
-  const [selectedAgents, setSelectedAgents] = useState<Agent[]>([]);
+  const [selectedAgents, setSelectedAgents] = useState<AgentType[]>([]);
   const [topic, setTopic] = useState("");
   const [userOpinion, setUserOpinion] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -37,7 +38,7 @@ export const DebateProvider = ({ children }: { children: ReactNode }) => {
   >("selection");
   const [nextSelectedAgent, setNextSelectedAgent] = useState<string>("");
 
-  const toggleAgentSelection = (agent: Agent) => {
+  const toggleAgentSelection = (agent: AgentType) => {
     if (selectedAgents.some((a) => a.id === agent.id)) {
       setSelectedAgents(selectedAgents.filter((a) => a.id !== agent.id));
     } else if (selectedAgents.length < 5) {
@@ -65,12 +66,19 @@ export const DebateProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
+  const clearSelectedAgents = () => {
+    setSelectedAgents([]);
+    setCurrentStage("selection");
+    setTopic("");
+    setUserOpinion("");
+    setMessages([]);
+    setNextSelectedAgent("");
+  };
+
   // Determine if we can advance to the next stage
   const canAdvance =
     (currentStage === "selection" && selectedAgents.length >= 2) ||
-    (currentStage === "topic" &&
-      topic.trim() !== "" &&
-      userOpinion.trim() !== "");
+    (currentStage === "topic" && topic.trim() !== "");
 
   return (
     <DebateContext.Provider
@@ -89,6 +97,7 @@ export const DebateProvider = ({ children }: { children: ReactNode }) => {
         canAdvance,
         nextSelectedAgent,
         setNextSelectedAgent,
+        clearSelectedAgents,
       }}
     >
       {children}

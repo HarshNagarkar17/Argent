@@ -20,8 +20,8 @@ const DebateChat: React.FC = () => {
     topic,
     nextSelectedAgent,
     setNextSelectedAgent,
-    setCurrentStage,
     updateMessageContent,
+    clearSelectedAgents,
   } = useDebate();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -68,6 +68,7 @@ const DebateChat: React.FC = () => {
             message: topic,
             threadId: "abc-123",
             threadMessages: messages,
+            selectedAgent: agent.id,
           }),
           signal: controller.signal,
         }
@@ -139,7 +140,9 @@ const DebateChat: React.FC = () => {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setCurrentStage("selection")}
+          onClick={() => {
+            clearSelectedAgents();
+          }}
           className="text-xs text-[#b9bbbe] hover:text-[#dcddde]"
         >
           New Debate
